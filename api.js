@@ -79,9 +79,15 @@ myRouter.route('/api/login/:email')
 		if(!!error) {
 			console.log('Error in the query...');
 		} else {
-			console.log('User connected : ' + req.params.email);
+			var reqError = '';
+			if(user[0] == null) {
+				console.log('Email does not exist...');
+				reqError = 'no user';
+			} else {
+				console.log('User connected : ' + req.params.email);
+			}
 			jwt.sign({user}, 'secretkey', {expiresIn : '30 days'}, function(error, token) {
-				res.json({user, token});
+				res.json({user, token, reqError});
 			});
 		}
 	});
