@@ -76,9 +76,11 @@ myRouter.route('/api/register')
 //protected login 
 myRouter.route('/api/login/:email')
 .get(function(req, res) {
+	//collect all the information of a user thanks to the email
 	connection.query("SELECT * FROM users WHERE email='" + req.params.email + "'", function(error, user, field) {
 		if(!!error) {
 			console.log('Error in the query...');
+		//securization of the request by watching the header
 		} else if(req.header('authorization') == '9cb986477ea6b412e1571fa18fafd210830399d8762fa87448440950221df1c6') {
 			var reqError = '';
 			if(user[0] == null) {
@@ -87,6 +89,7 @@ myRouter.route('/api/login/:email')
 			} else {
 				console.log('User connected : ' + req.params.email);
 			}
+			//send the information of the user and the jwt token in json format
 			jwt.sign({user}, 'secretkey', {expiresIn : '30 days'}, function(error, token) {
 				res.json({user, token, reqError});
 			});
