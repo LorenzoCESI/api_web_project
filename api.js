@@ -24,8 +24,12 @@ myRouter.route('/api/users')
 	connection.query("SELECT * FROM users", function(error, rows, field) {
 		if(!!error) {
 			console.log('Error in the query...');
-		} else {
+		} else if(req.header('authorization') == '9cb986477ea6b412e1571fa18fafd210830399d8762fa87448440950221df1c6') {
 			res.json(rows);
+			console.log('Authorized');
+		} else {
+			console.log('Unauthorized');
+			(res.sendStatus(401));
 		}
 	});
 });
@@ -36,8 +40,12 @@ myRouter.route('/api/users/:user_id')
 	connection.query("SELECT * FROM users WHERE id=" + req.params.user_id, function(error, rows, field) {
 		if(!!error) {
 			console.log('Error in the query...')
-		} else {
+		} else if(req.header('authorization') == '9cb986477ea6b412e1571fa18fafd210830399d8762fa87448440950221df1c6') {
 			res.json(rows);
+			console.log('Authorized');
+		} else {
+			console.log('Unauthorized');
+			(res.sendStatus(401));
 		}
 	});
 });
@@ -47,7 +55,7 @@ myRouter.route('/api/logintoken')
 .post(verifyToken, function(req, res) {
 	jwt.verify(req.token, 'secretkey', function(error, authData) {
 		if(error) {
-			res.sendStatus(403);
+			res.sendStatus(401);
 		} else {
 			res.json({authData});
 		}
@@ -94,8 +102,8 @@ myRouter.route('/api/login/:email')
 				res.json({user, token, reqError});
 			});
 		} else {
-			console.log("Unauthorized");
-			(res.sendStatus(403));
+			console.log('Unauthorized');
+			(res.sendStatus(401));
 		}
 	});
 });
@@ -115,7 +123,7 @@ function verifyToken(req, res, next) {
 		req.token = bearerToken;
 		next();
 	} else {
-		res.sendStatus(403);
+		res.sendStatus(401);
 	}
 }
 
