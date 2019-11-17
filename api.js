@@ -10,11 +10,12 @@ app.use(bodyParser.json());
 var port = 3000;
 var hostname = 'localhost';
 
+//database parameters
 var connection = mysql.createConnection({
 	host : 'localhost',
 	user : 'root',
 	password : '',
-	database : 'web_project_cesi_2019'//'web_project_cesi_2019'
+	database : 'web_project_cesi_2019'
 });
 
 //collect all the users
@@ -72,7 +73,7 @@ myRouter.route('/api/register')
 	});
 });
 
-//login 
+//protected login 
 myRouter.route('/api/login/:email')
 .get(function(req, res) {
 	connection.query("SELECT * FROM users WHERE email='" + req.params.email + "'", function(error, user, field) {
@@ -96,13 +97,14 @@ myRouter.route('/api/login/:email')
 	});
 });
 
-//Api home
+//API home
 myRouter.route('/api/')
 .get(function(req, res) {
 	res.json({messsage : "Bienvenue sur l'API Node.js de notre projet !", 
 				authorization : req.header('authorization')});
 });
 
+//verification of the token
 function verifyToken(req, res, next) {
 	const bearerHeader = req.headers['authorization'];
 	if(typeof bearerHeader !== 'undefined') {
@@ -115,6 +117,7 @@ function verifyToken(req, res, next) {
 	}
 }
 
+//database connection
 connection.connect(function(error) {
 	if(!!error) {
 		console.log('Error...');
