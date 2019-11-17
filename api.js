@@ -78,7 +78,7 @@ myRouter.route('/api/login/:email')
 	connection.query("SELECT * FROM users WHERE email='" + req.params.email + "'", function(error, user, field) {
 		if(!!error) {
 			console.log('Error in the query...');
-		} else {
+		} else if(req.header('authorization') == '9cb986477ea6b412e1571fa18fafd210830399d8762fa87448440950221df1c6') {
 			var reqError = '';
 			if(user[0] == null) {
 				console.log('Email does not exist...');
@@ -89,6 +89,9 @@ myRouter.route('/api/login/:email')
 			jwt.sign({user}, 'secretkey', {expiresIn : '30 days'}, function(error, token) {
 				res.json({user, token, reqError});
 			});
+		} else {
+			console.log("Unauthorized");
+			(res.sendStatus(403));
 		}
 	});
 });
@@ -96,7 +99,8 @@ myRouter.route('/api/login/:email')
 //Api home
 myRouter.route('/api/')
 .get(function(req, res) {
-	res.json({messsage : "Bienvenue sur l'API Node.js de notre projet !"});
+	res.json({messsage : "Bienvenue sur l'API Node.js de notre projet !", 
+				authorization : req.header('authorization')});
 });
 
 function verifyToken(req, res, next) {
