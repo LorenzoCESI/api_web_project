@@ -103,8 +103,7 @@ myRouter.route('/api/login/:email')
 //API home
 myRouter.route('/api/')
 .get(function(req, res) {
-	res.json({messsage : "Bienvenue sur l'API Node.js de notre projet !", 
-				authorization : req.header('authorization')});
+	res.json({messsage : "Bienvenue sur l'API Node.js de notre projet !"});
 });
 
 //verification of the token
